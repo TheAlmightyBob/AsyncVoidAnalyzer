@@ -227,5 +227,59 @@ namespace AsyncVoidAnalyzer.Test
 
             HasDiagnostic(code, AsyncVoidAnalyzer.DiagnosticId);
         }
+
+        [Test]
+        public void AwaitInCatch_HasDiagnostics()
+        {
+            var code = @"
+    using System;
+    using System.Threading.Tasks;
+
+    namespace AsyncTest
+    {
+        class AsyncTestClass
+        {
+            public async void AwaitInCatch()
+            {
+                try
+                {
+                }
+                catch
+                {
+                    [|await Task.Delay(0)|];
+                }
+            }
+        }
+    }";
+
+            HasDiagnostic(code, AsyncVoidAnalyzer.DiagnosticId);
+        }
+
+        [Test]
+        public void AwaitInFinally_HasDiagnostics()
+        {
+            var code = @"
+    using System;
+    using System.Threading.Tasks;
+
+    namespace AsyncTest
+    {
+        class AsyncTestClass
+        {
+            public async void AwaitInFinally()
+            {
+                try
+                {
+                }
+                finally
+                {
+                    [|await Task.Delay(0)|];
+                }
+            }
+        }
+    }";
+
+            HasDiagnostic(code, AsyncVoidAnalyzer.DiagnosticId);
+        }
     }
 }

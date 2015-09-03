@@ -34,7 +34,18 @@ namespace AsyncVoidAnalyzer
             //
             while (node != null && !(node is MethodDeclarationSyntax) && !(node is TryStatementSyntax) && !(node is AnonymousFunctionExpressionSyntax))
             {
-                node = node.Parent;
+                if (node is CatchClauseSyntax || node is FinallyClauseSyntax)
+                {
+                    // Handling catch/finally in C#6...
+                    // We are in a try statement, but the wrong part!
+                    // So skip it and keep going.
+                    //
+                    node = node.Parent?.Parent;
+                }
+                else
+                {
+                    node = node.Parent;
+                }
             }
 
             if (node == null || node is TryStatementSyntax)
